@@ -1,81 +1,140 @@
-import React, { useState } from 'react'
-import { ArrowLeft, Shield, Check, Star, CreditCard, Zap, Crown, Users, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react'
+import React, { useState } from "react";
+import {
+  ArrowLeft,
+  Shield,
+  Check,
+  Star,
+  CreditCard,
+  Zap,
+  Crown,
+  Users,
+  AlertCircle,
+  CheckCircle,
+  ExternalLink,
+} from "lucide-react";
+import { PayPalButton } from "react-paypal-button-v2";
 
 interface PaymentSectionProps {
-  selectedPlan: string | null
-  onBack: () => void
+  selectedPlan: string | null;
+  onBack: () => void;
 }
 
-const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack }) => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
-  const [processing, setProcessing] = useState(false)
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
-  const [paymentError, setPaymentError] = useState<string | null>(null)
+const PaymentSection: React.FC<PaymentSectionProps> = ({
+  selectedPlan,
+  onBack,
+}) => {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
+    "monthly"
+  );
+  const [processing, setProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const planDetails = {
-    'Free': { 
-      price: 0, 
+    Free: {
+      price: 0,
       icon: Shield,
-      color: 'from-gray-600 to-gray-700',
-      features: ['1 GB storage', 'Basic encryption', 'Community support', 'Web access only'] 
+      color: "from-gray-600 to-gray-700",
+      features: [
+        "1 GB storage",
+        "Basic encryption",
+        "Community support",
+        "Web access only",
+      ],
     },
-    'Personal': { 
-      price: 5, 
+    Personal: {
+      price: 5,
       icon: Star,
-      color: 'from-blue-600 to-blue-700',
-      features: ['100 GB storage', 'Advanced encryption', 'Email support', 'Basic editing', 'Mobile app access'] 
+      color: "from-blue-600 to-blue-700",
+      features: [
+        "100 GB storage",
+        "Advanced encryption",
+        "Email support",
+        "Basic editing",
+        "Mobile app access",
+      ],
     },
-    'Pro': { 
-      price: 15, 
+    Pro: {
+      price: 15,
       icon: Zap,
-      color: 'from-red-600 to-red-700',
-      features: ['1 TB storage', 'End-to-end encryption', 'Priority support', 'Full editing', 'Basic AI tools', 'Version history'] 
+      color: "from-red-600 to-red-700",
+      features: [
+        "1 TB storage",
+        "End-to-end encryption",
+        "Priority support",
+        "Full editing",
+        "Basic AI tools",
+        "Version history",
+      ],
     },
-    'Business': { 
-      price: 30, 
+    Business: {
+      price: 30,
       icon: Users,
-      color: 'from-purple-600 to-purple-700',
-      features: ['5 TB storage', 'Advanced security', '24/7 support', 'Team features', 'Advanced AI', 'Admin dashboard'] 
+      color: "from-purple-600 to-purple-700",
+      features: [
+        "5 TB storage",
+        "Advanced security",
+        "24/7 support",
+        "Team features",
+        "Advanced AI",
+        "Admin dashboard",
+      ],
     },
-    'Enterprise': { 
-      price: null, 
+    Enterprise: {
+      price: null,
       icon: Crown,
-      color: 'from-yellow-600 to-yellow-700',
-      features: ['Unlimited storage', 'Full compliance', 'Dedicated manager', 'Custom integrations', 'SLA guarantees'] 
-    }
-  }
+      color: "from-yellow-600 to-yellow-700",
+      features: [
+        "Unlimited storage",
+        "Full compliance",
+        "Dedicated manager",
+        "Custom integrations",
+        "SLA guarantees",
+      ],
+    },
+  };
 
-  const currentPlan = selectedPlan ? planDetails[selectedPlan as keyof typeof planDetails] : null
-  const price = currentPlan?.price
-  const finalPrice = price === null ? 'Custom' : price === 0 ? 0 : billingCycle === 'yearly' ? price * 10 : price
-  const Icon = currentPlan?.icon || Shield
+  const currentPlan = selectedPlan
+    ? planDetails[selectedPlan as keyof typeof planDetails]
+    : null;
+  const price = currentPlan?.price || null;
+  const finalPrice =
+    price === null
+      ? "Custom"
+      : price === 0
+      ? 0
+      : billingCycle === "yearly"
+      ? price * 10
+      : price;
+  const Icon = currentPlan?.icon || Shield;
 
   const handlePayment = async () => {
-    setProcessing(true)
-    setPaymentError(null)
+    setProcessing(true);
+    setPaymentError(null);
 
     try {
       // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // For demo purposes, we'll just show success
       // You can replace this with your actual payment logic
-      setPaymentSuccess(true)
+      setPaymentSuccess(true);
     } catch (error) {
-      setPaymentError('Payment failed. Please try again.')
+      setPaymentError("Payment failed. Please try again.");
     } finally {
-      setProcessing(false)
+      setProcessing(false);
     }
-  }
+  };
 
   const handleFreePlan = () => {
-    setPaymentSuccess(true)
-  }
+    setPaymentSuccess(true);
+  };
 
   const handleEnterprisePlan = () => {
     // Redirect to contact form or open email client
-    window.location.href = 'mailto:sales@scarletdrives.com?subject=Enterprise Plan Inquiry'
-  }
+    window.location.href =
+      "mailto:sales@scarletdrives.com?subject=Enterprise Plan Inquiry";
+  };
 
   if (paymentSuccess) {
     return (
@@ -84,18 +143,21 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
           <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-white" />
           </div>
-          
-          <h1 className="text-3xl font-bold text-white mb-4">Payment Successful!</h1>
+
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Payment Successful!
+          </h1>
           <p className="text-green-200 text-lg mb-6">
             Welcome to Scarlet Drives {selectedPlan} Plan
           </p>
-          
+
           <div className="bg-green-800 bg-opacity-50 rounded-lg p-4 mb-6">
             <p className="text-green-100 text-sm">
-              Your subscription is now active. You can start enjoying all the premium features immediately.
+              Your subscription is now active. You can start enjoying all the
+              premium features immediately.
             </p>
           </div>
-          
+
           <div className="flex gap-4 justify-center">
             <button
               onClick={() => window.location.reload()}
@@ -112,7 +174,7 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -127,7 +189,9 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
           Back to Plans
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-white">Complete Your Purchase</h1>
+          <h1 className="text-3xl font-bold text-white">
+            Complete Your Purchase
+          </h1>
           <p className="text-gray-400">Secure payment processing</p>
         </div>
       </div>
@@ -143,27 +207,39 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
         {/* Plan Summary */}
         <div className="space-y-6">
           {/* Selected Plan Card */}
-          <div className={`bg-gradient-to-br ${currentPlan?.color} rounded-2xl border border-gray-600 p-6 shadow-xl`}>
+          <div
+            className={`bg-gradient-to-br ${currentPlan?.color} rounded-2xl border border-gray-600 p-6 shadow-xl`}
+          >
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                 <Icon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">{selectedPlan} Plan</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  {selectedPlan} Plan
+                </h2>
                 <p className="text-white text-opacity-80">
-                  {billingCycle === 'yearly' ? 'Annual billing' : 'Monthly billing'}
+                  {billingCycle === "yearly"
+                    ? "Annual billing"
+                    : "Monthly billing"}
                 </p>
               </div>
             </div>
-            
+
             <div className="text-center py-4">
               <div className="text-4xl font-bold text-white mb-2">
-                {typeof finalPrice === 'number' ? `$${finalPrice}` : finalPrice}
+                {typeof finalPrice === "number" ? `$${finalPrice}` : finalPrice}
               </div>
               <p className="text-white text-opacity-80">
-                {price === null ? 'Contact us' : price === 0 ? 'Free forever' : billingCycle === 'yearly' ? 'per year' : 'per month'}
+                {price === null
+                  ? "Contact us"
+                  : price === 0
+                  ? "Free forever"
+                  : billingCycle === "yearly"
+                  ? "per year"
+                  : "per month"}
               </p>
-              {billingCycle === 'yearly' && price && price > 0 && (
+              {billingCycle === "yearly" && price && price > 0 && (
                 <div className="mt-2">
                   <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     Save ${price * 2} per year
@@ -177,8 +253,10 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
           {price !== null && price > 0 && (
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">Billing Cycle</h3>
-                {billingCycle === 'yearly' && (
+                <h3 className="text-lg font-semibold text-white">
+                  Billing Cycle
+                </h3>
+                {billingCycle === "yearly" && (
                   <span className="px-3 py-1 bg-green-900 text-green-300 text-sm rounded-full font-medium">
                     17% OFF
                   </span>
@@ -186,26 +264,28 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
               </div>
               <div className="flex items-center bg-gray-700 rounded-lg p-1">
                 <button
-                  onClick={() => setBillingCycle('monthly')}
+                  onClick={() => setBillingCycle("monthly")}
                   className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-all duration-200 ${
-                    billingCycle === 'monthly'
-                      ? 'bg-red-600 text-white shadow-lg'
-                      : 'text-gray-400 hover:text-white'
+                    billingCycle === "monthly"
+                      ? "bg-red-600 text-white shadow-lg"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   Monthly
                   <div className="text-xs opacity-75 mt-1">${price}/month</div>
                 </button>
                 <button
-                  onClick={() => setBillingCycle('yearly')}
+                  onClick={() => setBillingCycle("yearly")}
                   className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-all duration-200 ${
-                    billingCycle === 'yearly'
-                      ? 'bg-red-600 text-white shadow-lg'
-                      : 'text-gray-400 hover:text-white'
+                    billingCycle === "yearly"
+                      ? "bg-red-600 text-white shadow-lg"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   Yearly
-                  <div className="text-xs opacity-75 mt-1">${price * 10}/year</div>
+                  <div className="text-xs opacity-75 mt-1">
+                    ${price * 10}/year
+                  </div>
                 </button>
               </div>
             </div>
@@ -213,7 +293,9 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
 
           {/* Features List */}
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">What's included:</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              What's included:
+            </h3>
             <ul className="space-y-3">
               {currentPlan?.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3">
@@ -233,7 +315,9 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-6">
               <CreditCard className="w-6 h-6 text-red-400" />
-              <h3 className="text-lg font-semibold text-white">Payment Method</h3>
+              <h3 className="text-lg font-semibold text-white">
+                Payment Method
+              </h3>
             </div>
 
             {price === 0 ? (
@@ -242,9 +326,13 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
                 <div className="w-16 h-16 bg-green-900 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Check className="w-8 h-8 text-green-400" />
                 </div>
-                <h4 className="text-xl font-semibold text-white mb-2">No Payment Required</h4>
-                <p className="text-gray-400 mb-6">The Free plan doesn't require any payment information.</p>
-                <button 
+                <h4 className="text-xl font-semibold text-white mb-2">
+                  No Payment Required
+                </h4>
+                <p className="text-gray-400 mb-6">
+                  The Free plan doesn't require any payment information.
+                </p>
+                <button
                   onClick={handleFreePlan}
                   className="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-medium hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg"
                 >
@@ -257,9 +345,14 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
                 <div className="w-16 h-16 bg-yellow-900 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Crown className="w-8 h-8 text-yellow-400" />
                 </div>
-                <h4 className="text-xl font-semibold text-white mb-2">Custom Enterprise Solution</h4>
-                <p className="text-gray-400 mb-6">Contact our sales team for enterprise pricing and custom solutions tailored to your organization.</p>
-                <button 
+                <h4 className="text-xl font-semibold text-white mb-2">
+                  Custom Enterprise Solution
+                </h4>
+                <p className="text-gray-400 mb-6">
+                  Contact our sales team for enterprise pricing and custom
+                  solutions tailored to your organization.
+                </p>
+                <button
                   onClick={handleEnterprisePlan}
                   className="w-full py-3 px-4 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg font-medium hover:from-yellow-700 hover:to-yellow-800 transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
                 >
@@ -275,10 +368,13 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
                     <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
                       <CreditCard className="w-4 h-4 text-white" />
                     </div>
-                    <h4 className="text-white font-medium">Secure Payment Processing</h4>
+                    <h4 className="text-white font-medium">
+                      Secure Payment Processing
+                    </h4>
                   </div>
                   <p className="text-blue-200 text-sm">
-                    Click the button below to proceed with your payment. You can integrate your preferred payment method here.
+                    Click the button below to proceed with your payment. You can
+                    integrate your preferred payment method here.
                   </p>
                 </div>
 
@@ -290,18 +386,21 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
                       <p className="text-gray-400">Processing payment...</p>
                     </div>
                   )}
-                  
-                  <button
-                    onClick={handlePayment}
-                    disabled={processing}
-                    className={`w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg flex items-center justify-center gap-2 ${
-                      processing ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    {processing ? 'Processing...' : `Pay $${finalPrice}`}
-                  </button>
-                  
+
+                  <PayPalButton
+                    amount={price}
+                    // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                    onSuccess={(details, data) => {
+                      alert(
+                        "Transaction completed by " +
+                          details.payer.name.given_name
+                      );
+                    }}
+                    options={{
+                      clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+                    }}
+                  />
+
                   <p className="text-center text-xs text-gray-500">
                     Replace this button with your PayPal integration
                   </p>
@@ -311,8 +410,12 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
                 <div className="flex items-center gap-3 p-4 bg-green-900 bg-opacity-20 rounded-lg border border-green-700">
                   <Shield className="w-5 h-5 text-green-400 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-green-300">256-bit SSL Encryption</p>
-                    <p className="text-xs text-green-400">Your payment information is fully encrypted and secure</p>
+                    <p className="text-sm font-medium text-green-300">
+                      256-bit SSL Encryption
+                    </p>
+                    <p className="text-xs text-green-400">
+                      Your payment information is fully encrypted and secure
+                    </p>
                   </div>
                 </div>
               </div>
@@ -321,15 +424,19 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
 
           {/* Order Summary */}
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Order Summary
+            </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">{selectedPlan} Plan</span>
                 <span className="text-white font-medium">
-                  {typeof finalPrice === 'number' ? `$${finalPrice}` : finalPrice}
+                  {typeof finalPrice === "number"
+                    ? `$${finalPrice}`
+                    : finalPrice}
                 </span>
               </div>
-              {billingCycle === 'yearly' && price && price > 0 && (
+              {billingCycle === "yearly" && price && price > 0 && (
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">Discount (17% off)</span>
                   <span className="text-green-400">-${price * 2}</span>
@@ -339,12 +446,17 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
               <div className="flex justify-between items-center text-lg font-semibold">
                 <span className="text-white">Total</span>
                 <span className="text-white">
-                  {typeof finalPrice === 'number' ? `$${finalPrice}` : finalPrice}
+                  {typeof finalPrice === "number"
+                    ? `$${finalPrice}`
+                    : finalPrice}
                 </span>
               </div>
               {price !== null && price > 0 && (
                 <p className="text-gray-400 text-sm">
-                  {billingCycle === 'yearly' ? 'Billed annually' : 'Billed monthly'} • Cancel anytime
+                  {billingCycle === "yearly"
+                    ? "Billed annually"
+                    : "Billed monthly"}{" "}
+                  • Cancel anytime
                 </p>
               )}
             </div>
@@ -352,14 +464,19 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({ selectedPlan, onBack })
 
           {/* Terms */}
           <p className="text-xs text-gray-500 text-center">
-            By completing this purchase, you agree to our{' '}
-            <a href="#" className="text-red-400 hover:text-red-300 underline">Terms of Service</a> and{' '}
-            <a href="#" className="text-red-400 hover:text-red-300 underline">Privacy Policy</a>
+            By completing this purchase, you agree to our{" "}
+            <a href="#" className="text-red-400 hover:text-red-300 underline">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-red-400 hover:text-red-300 underline">
+              Privacy Policy
+            </a>
           </p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PaymentSection
+export default PaymentSection;
